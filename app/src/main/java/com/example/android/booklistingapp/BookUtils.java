@@ -21,6 +21,7 @@ import java.util.List;
 public final class BookUtils {
     public static final String LOG_TAG = BookUtils.class.getName();
 
+    //An empty private constructor makes sure that the class is not going to be initialised. Don't delete.
     private BookUtils() {
 
     }
@@ -68,7 +69,7 @@ public final class BookUtils {
                         String author = authors.getString(j);
                         authorString.append(author);
                         if (j < authors.length() - 1) {
-                            authorString.append(" ,");
+                            authorString.append(", ");
                         }
                     }
                 }

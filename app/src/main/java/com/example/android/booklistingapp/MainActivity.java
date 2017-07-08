@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String url_books;
     private TextView emptyStateTextView;
     private BookAdapter adapter;
-    private boolean isConnected = false;
     private View loadingIndicator;
 
     @Override
@@ -48,15 +47,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         loadingIndicator = findViewById(R.id.loading_spinner);
         loadingIndicator.setVisibility(View.GONE);
 
-        ConnectivityManager cm =
+        final ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
         if (networkInfo == null || !networkInfo.isConnected()) {
             emptyStateTextView.setText(R.string.no_connection);
-        } else {
-            isConnected = true;
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -68,14 +65,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 url_books = "https://www.googleapis.com/books/v1/volumes?q=" + editText.getText().toString() + "&maxResults=10";
                 Log.i(LOG_TAG, url_books);
 
-                if (isConnected) {
+                NetworkInfo networkInfo = cm.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
                     LoaderManager loaderManager = getLoaderManager();
                     loaderManager.restartLoader(BOOK_LOADER_ID, null, MainActivity.this);
                     loadingIndicator.setVisibility(View.VISIBLE);
+                } else {
+                    emptyStateTextView.setText(R.string.no_connection);
                 }
             }
         });
-
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
