@@ -6,44 +6,37 @@
     android:orientation="horizontal"
     android:padding="@dimen/margin">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/list_authors"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/min_padding"
-            android:textSize="@dimen/author"
-            tools:text="Johan Ludvig Runeberg"
-            android:textStyle="italic"/>
-
-        <TextView
-            android:id="@+id/list_title"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
-            tools:text="Vänrikki Stoolin tarinat" />
-
-        <TextView
-            android:id="@+id/list_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
-            tools:text="Kaksiosainen tarina runomuodossa" />
-    </LinearLayout>
 
     <TextView
+        android:id="@+id/list_authors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/readme"
+        android:paddingBottom="@dimen/min_padding"
+        android:textSize="@dimen/author"
+        android:textStyle="italic"
+        tools:text="Johan Ludvig Runeberg" />
+
+    <TextView
+        android:id="@+id/list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/list_authors"
+        android:layout_toLeftOf="@+id/readme"
+        android:textColor="@color/secondary_text"
+        android:textStyle="bold"
+        tools:text="Vänrikki Stoolin tarinat" />
+
+    <TextView
+        android:id="@+id/readme"
         android:layout_width="@dimen/shape_widht"
         android:layout_height="@dimen/shape_height"
-        android:textStyle="bold"
         android:layout_alignParentRight="true"
-        android:textColor="@color/icons"
+        android:layout_marginLeft="@dimen/margin"
         android:background="@drawable/readme_oval"
         android:gravity="center"
-        android:text="@string/read_me"/>
+        android:text="@string/read_me"
+        android:textColor="@color/icons"
+        android:textStyle="bold" />
 
 </RelativeLayout>

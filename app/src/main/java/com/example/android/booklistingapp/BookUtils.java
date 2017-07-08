@@ -26,6 +26,7 @@ public final class BookUtils {
     }
 
     public static List<Book> extractBooks(String requestUrl) {
+        Log.i(LOG_TAG, "extractBooks");
         URL url = createUrl(requestUrl);
         String jsonResponse = null;
 
@@ -41,6 +42,7 @@ public final class BookUtils {
     }
 
     private static List<Book> extractFeatureFromJson(String bookJSON) {
+        Log.i(LOG_TAG, "extractFeatureFromJson");
         List<Book> books = new ArrayList<>();
 
         if (TextUtils.isEmpty(bookJSON)) {
@@ -50,23 +52,28 @@ public final class BookUtils {
         try {
             JSONObject json = new JSONObject(bookJSON);
             JSONArray bookArray = json.getJSONArray("items");
-            int totalItems = bookArray.getInt(1);
             StringBuilder authorString = new StringBuilder();
 
             for (int i = 0; i < bookArray.length(); i++) {
                 JSONObject currentBook = bookArray.getJSONObject(i);
-                String selfLink = currentBook.getString("selfLink");
-                String title = currentBook.getString("title");
-                String subtitle = currentBook.getString("subtitle");
-                JSONArray authors = currentBook.getJSONArray("authors");
-                for (int j = 0; i < authors.length(); j++) {
-                    JSONObject author = authors.getJSONObject(j);
-                    authorString.append(author);
-                    if (j < authors.length() - 1) {
-                        authorString.append(" ,");
+                JSONObject accessInfo = currentBook.getJSONObject("accessInfo");
+                String readerLink = accessInfo.getString("webReaderLink");
+
+                JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
+                String title = volumeInfo.getString("title");
+
+                if (volumeInfo.has("authors")) {
+                    JSONArray authors = volumeInfo.getJSONArray("authors");
+                    for (int j = 0; j < authors.length(); j++) {
+                        String author = authors.getString(j);
+                        authorString.append(author);
+                        if (j < authors.length() - 1) {
+                            authorString.append(" ,");
+                        }
                     }
                 }
-                Book book = new Book(totalItems, title, subtitle, authorString.toString(), selfLink);
+
+                Book book = new Book(title, authorString.toString(), readerLink);
                 books.add(book);
             }
         } catch (JSONException e) {
@@ -76,6 +83,7 @@ public final class BookUtils {
     }
 
     private static URL createUrl(String stringUrl) {
+        Log.i(LOG_TAG, "createUrl");
         URL url = null;
         try {
             url = new URL(stringUrl);
@@ -86,6 +94,7 @@ public final class BookUtils {
     }
 
     private static String makeHttpRequest(URL url) throws IOException {
+        Log.i(LOG_TAG, "makeHttpRequest");
         String jsonResponse = "";
 
         // If the URL is null, then return early.
@@ -124,6 +133,7 @@ public final class BookUtils {
     }
 
     private static String readFromStream(InputStream inputStream) throws IOException {
+        Log.i(LOG_TAG, "readFromStream");
         StringBuilder output = new StringBuilder();
         if (inputStream != null) {
             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, Charset.forName("UTF-8"));

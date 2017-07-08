@@ -1,37 +1,25 @@
 package com.example.android.booklistingapp;
 
 public class Book {
-    private int totalItems;
     private String title;
-    private String subtitle;
     private String authors;
-    private String selfLink;
+    private String readerLink;
 
-    public Book(int totalItems, String title, String subtitle, String authors, String selfLink) {
-        this.totalItems = totalItems;
+    public Book(String title, String authors, String readerLink) {
         this.title = title;
-        this.subtitle = subtitle;
         this.authors = authors;
-        this.selfLink = selfLink;
-    }
-
-    public int getTotalItems() {
-        return totalItems;
+        this.readerLink = readerLink;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
-    }
-
     public String getAuthors() {
         return authors;
     }
 
-    public String getSelfLink() {
-        return selfLink;
+    public String getReaderLink() {
+        return readerLink;
     }
 }

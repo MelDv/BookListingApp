@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private String url_books;
     private TextView emptyStateTextView;
     private BookAdapter adapter;
-    private EditText editText;
     private boolean isConnected = false;
+    private View loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         setContentView(R.layout.activity_main);
 
         emptyStateTextView = (TextView) findViewById(R.id.empty);
-        ListView list = (ListView) findViewById(R.id.list);
+        final ListView list = (ListView) findViewById(R.id.list);
         list.setEmptyView(emptyStateTextView);
 
         adapter = new BookAdapter(this, new ArrayList<Book>());
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Button button = (Button) findViewById(R.id.search_button);
         final EditText editText = (EditText) findViewById(R.id.search_field);
 
-        final View loadingIndicator = findViewById(R.id.loading_spinner);
+        loadingIndicator = findViewById(R.id.loading_spinner);
         loadingIndicator.setVisibility(View.GONE);
 
         ConnectivityManager cm =
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
 
-        if (networkInfo == null && !networkInfo.isConnected()) {
+        if (networkInfo == null || !networkInfo.isConnected()) {
             emptyStateTextView.setText(R.string.no_connection);
         } else {
             isConnected = true;
@@ -62,13 +62,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                adapter.clear();
+                adapter.notifyDataSetChanged();
 
                 url_books = "https://www.googleapis.com/books/v1/volumes?q=" + editText.getText().toString() + "&maxResults=10";
                 Log.i(LOG_TAG, url_books);
 
                 if (isConnected) {
                     LoaderManager loaderManager = getLoaderManager();
-                    loaderManager.initLoader(BOOK_LOADER_ID, null, MainActivity.this);
+                    loaderManager.restartLoader(BOOK_LOADER_ID, null, MainActivity.this);
                     loadingIndicator.setVisibility(View.VISIBLE);
                 }
             }
@@ -79,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Book book = adapter.getItem(position);
-                String url = book.getSelfLink();
+                String url = book.getReaderLink();
 
                 Intent urlIntent = new Intent(Intent.ACTION_VIEW);
                 urlIntent.setData(Uri.parse(url));
@@ -99,19 +101,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     public void onLoadFinished(Loader<List<Book>> loader, List<Book> books) {
+        loadingIndicator = findViewById(R.id.loading_spinner);
+        loadingIndicator.setVisibility(View.GONE);
+
         Log.i(LOG_TAG, "onLoadFinished");
         adapter.clear();
+        adapter.notifyDataSetChanged();
+
+        url_books = "";
 
         ProgressBar pb = (ProgressBar) findViewById(R.id.loading_spinner);
         pb.setVisibility(View.GONE);
         if (books != null && !books.isEmpty()) {
             adapter.addAll(books);
-
-            TextView results = (TextView) findViewById(R.id.number_of_results);
-            Book resultBook = books.get(0);
-            int result = resultBook.getTotalItems();
-
-            results.setText(result);
         } else {
             emptyStateTextView.setText(R.string.no_books);
         }

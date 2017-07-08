@@ -24,19 +24,13 @@ public class BookAdapter extends ArrayAdapter<Book> {
 
         Book currentBook = getItem(position);
 
-        TextView authors = (TextView) convertView.findViewById(R.id.list_authors);
+        TextView authors = convertView.findViewById(R.id.list_authors);
         String authorString = currentBook.getAuthors();
         authors.setText(authorString);
 
-        TextView title = (TextView) convertView.findViewById(R.id.list_title);
+        TextView title = convertView.findViewById(R.id.list_title);
         String titleString = currentBook.getTitle();
         title.setText(titleString);
-
-        TextView subtitle = (TextView) convertView.findViewById(R.id.list_subtitle);
-        String subtitleString = currentBook.getSubtitle();
-        if (!subtitleString.isEmpty()) {
-            subtitle.setText(subtitleString);
-        }
 
         return convertView;
     }
